@@ -1,7 +1,8 @@
 use crate::{Context, Error};
+use poise::serenity_prelude as serenity;
 
 /// Show this help menu
-#[poise::command(prefix_command, track_edits, slash_command)]
+#[poise::command(prefix_command, track_edits)]
 pub async fn help(
     ctx: Context<'_>,
     #[description = "Specific command to show help about"]
@@ -12,7 +13,8 @@ pub async fn help(
         ctx,
         command.as_deref(),
         poise::builtins::HelpConfiguration {
-            extra_text_at_bottom: "This is an example bot made to showcase features of my custom Discord bot framework",
+            extra_text_at_bottom:
+                "Slave of Ghost Village",
             ..Default::default()
         },
     )
@@ -23,7 +25,7 @@ pub async fn help(
 /// Vote for something
 ///
 /// Enter `!vote pumpkin` to vote for pumpkins
-#[poise::command(prefix_command, slash_command)]
+#[poise::command(prefix_command)]
 pub async fn vote(
     ctx: Context<'_>,
     #[description = "What to vote for"] choice: String,
@@ -48,7 +50,7 @@ pub async fn vote(
 /// !getvotes
 /// !getvotes pumpkin
 /// ```
-#[poise::command(prefix_command, track_edits, aliases("votes"), slash_command)]
+#[poise::command(prefix_command, track_edits, aliases("votes"))]
 pub async fn getvotes(
     ctx: Context<'_>,
     #[description = "Choice to retrieve votes for"] choice: Option<String>,
@@ -77,12 +79,39 @@ pub async fn getvotes(
 }
 /// Just saying Pong for Ping
 /// !ping
-#[poise::command(prefix_command, slash_command)]
+#[poise::command(prefix_command)]
 pub async fn ping(
     ctx: Context<'_>,
     #[description = "Pong?"] _say: Option<String>,
 ) -> Result<(), Error> {
     let response = "Pong?";
     ctx.reply(response).await?;
+    Ok(())
+}
+
+/// Write !age and see your account age
+
+#[poise::command(prefix_command)]
+pub async fn age(
+    ctx: Context<'_>,
+    #[description = "Selected user"] user: Option<serenity::User>,
+) -> Result<(), Error> {
+    let u = user.as_ref().unwrap_or_else(|| ctx.author());
+    let response = format!("{}'s account was created at {}", u.name, u.created_at());
+    ctx.reply(response).await?;
+    Ok(())
+}
+
+/// Source
+///
+/// bobot's source code link !source
+#[poise::command(prefix_command)]
+pub async fn source(
+    ctx: Context<'_>,
+    #[description = "Shows bobot's githup repo"] _say: Option<String>,
+) -> Result<(), Error> {
+    let url = "https://github.com/bobosii/bobobot";
+    ctx.reply(url).await?;
+
     Ok(())
 }

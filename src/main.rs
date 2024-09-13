@@ -1,5 +1,4 @@
 #![warn(clippy::str_to_string)]
-
 mod commands;
 use dotenvy::dotenv;
 use poise::serenity_prelude as serenity;
@@ -44,10 +43,12 @@ async fn main() {
     // Every option can be omitted to use its default value
     let options = poise::FrameworkOptions {
         commands: vec![
+            commands::source(),
             commands::ping(),
             commands::help(),
             commands::vote(),
             commands::getvotes(),
+            commands::age(),
         ],
         prefix_options: poise::PrefixFrameworkOptions {
             prefix: Some("!".into()),
