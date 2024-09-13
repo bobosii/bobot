@@ -110,7 +110,7 @@ pub async fn source(
     ctx: Context<'_>,
     #[description = "Shows bobot's githup repo"] _say: Option<String>,
 ) -> Result<(), Error> {
-    let url = "https://github.com/bobosii/bobobot";
+    let url = "https://github.com/bobosii/bobot";
     ctx.reply(url).await?;
 
     Ok(())
