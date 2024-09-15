@@ -116,7 +116,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "bobobot"
+name = "bobot"
 version = "0.1.0"
 dependencies = [
  "dotenvy",

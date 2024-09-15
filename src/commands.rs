@@ -1,5 +1,7 @@
 use crate::{Context, Error};
 use poise::serenity_prelude as serenity;
+use rand::Rng;
+use std::cmp::Ordering;
 
 /// Show this help menu
 #[poise::command(prefix_command, track_edits)]
@@ -13,12 +15,50 @@ pub async fn help(
         ctx,
         command.as_deref(),
         poise::builtins::HelpConfiguration {
-            extra_text_at_bottom:
-                "Slave of Ghost Village",
+            extra_text_at_bottom: "Slave of Ghost Village",
             ..Default::default()
         },
     )
     .await?;
+    Ok(())
+}
+/// Guess a number !
+///
+/// Enter '!guessnumber 31' to guess number
+#[poise::command(prefix_command)]
+pub async fn guessnumber(
+    ctx: Context<'_>,
+    #[description = "What is your guess ?"] guess: String,
+) -> Result<(), Error> {
+    let secret_number: u32 = rand::thread_rng().gen_range(1..100);
+
+    ctx.say("Sayi tahmin etme oyununa hos geldiniz !").await?;
+
+    // Tahmini string olarak alıp sayıya dönüştürme
+    let w_guess: u32 = match guess.trim().parse() {
+        Ok(num) => num,
+        Err(_) => {
+            ctx.say("Lutfen sadece sayi girin!").await?;
+            return Ok(());
+        }
+    };
+
+    println!("Secret Number: {:?}", secret_number);
+    println!("Player Guess: {:?}", w_guess);
+
+    // Tahminle gizli sayı karşılaştırılıyor
+    match w_guess.cmp(&secret_number) {
+        Ordering::Less => {
+            ctx.say(format!("Tahminiz çok düşük !, Tahmininiz: {:?}, Gizli sayı: {:?}",w_guess,secret_number)).await?;
+        }
+        Ordering::Greater => {
+            ctx.say(format!("Tahminiz çok yüksek !, Tahmininiz: {:?} ,Gizli sayı: {:?}",w_guess,secret_number)).await?;
+        }
+        Ordering::Equal => {
+            ctx.say(format!("Tebrikler kazandınız, Tahmininiz {:?}, Gizli sayı: {:?}",w_guess,secret_number)).await?;
+        }
+    }
+
     Ok(())
 }
 

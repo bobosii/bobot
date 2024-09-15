@@ -43,6 +43,7 @@ async fn main() {
     // Every option can be omitted to use its default value
     let options = poise::FrameworkOptions {
         commands: vec![
+            commands::guessnumber(),
             commands::source(),
             commands::ping(),
             commands::help(),
