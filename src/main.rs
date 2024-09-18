@@ -50,6 +50,7 @@ async fn main() {
             commands::vote(),
             commands::getvotes(),
             commands::age(),
+            commands::rockpaper(),
         ],
         prefix_options: poise::PrefixFrameworkOptions {
             prefix: Some("!".into()),

@@ -49,13 +49,25 @@ pub async fn guessnumber(
     // Tahminle gizli sayı karşılaştırılıyor
     match w_guess.cmp(&secret_number) {
         Ordering::Less => {
-            ctx.say(format!("Tahminiz çok düşük !, Tahmininiz: {:?}, Gizli sayı: {:?}",w_guess,secret_number)).await?;
+            ctx.say(format!(
+                "Tahminiz çok düşük !, Tahmininiz: {:?}, Gizli sayı: {:?}",
+                w_guess, secret_number
+            ))
+            .await?;
         }
         Ordering::Greater => {
-            ctx.say(format!("Tahminiz çok yüksek !, Tahmininiz: {:?} ,Gizli sayı: {:?}",w_guess,secret_number)).await?;
+            ctx.say(format!(
+                "Tahminiz çok yüksek !, Tahmininiz: {:?} ,Gizli sayı: {:?}",
+                w_guess, secret_number
+            ))
+            .await?;
         }
         Ordering::Equal => {
-            ctx.say(format!("Tebrikler kazandınız, Tahmininiz {:?}, Gizli sayı: {:?}",w_guess,secret_number)).await?;
+            ctx.say(format!(
+                "Tebrikler kazandınız, Tahmininiz {:?}, Gizli sayı: {:?}",
+                w_guess, secret_number
+            ))
+            .await?;
         }
     }
 
@@ -128,9 +140,53 @@ pub async fn ping(
     ctx.reply(response).await?;
     Ok(())
 }
+/// Rock Paper Scissors
+///
+/// Type your choice !rockpaper rock
+#[poise::command(prefix_command)]
+pub async fn rockpaper(
+    ctx: Context<'_>,
+    #[description = "Rock Paper Scissors ?"] choice: String,
+    user: Option<serenity::User>,
+) -> Result<(), Error> {
+    let game = ["rock", "paper", "scissors"];
+    let user_choice = choice.trim().to_lowercase();
+    let computer_cohice = game[rand::thread_rng().gen_range(1..3)];
+    let u = user.as_ref().unwrap_or_else(|| ctx.author());
+    match (user_choice.as_str(), computer_cohice) {
+        ("rock", "scissors") | ("scissors", "paper") | ("paper", "rock") => {
+            ctx.say(format!(
+                "Bobot choice {:?}, Your choice {:?}",
+                computer_cohice, user_choice
+            ))
+            .await?;
+            ctx.say(format!("Winner is {}", u.name)).await?;
+            ctx.say("Thanks for playing :)").await?;
+            return Ok(());
+        }
+        ("paper", "scissors") | ("scissors", "rock") | ("rock", "paper") => {
+            ctx.say(format!(
+                "Bobot choice {:?}, Your choice {:?}",
+                user_choice, computer_cohice
+            ))
+            .await?;
+            ctx.say(format!("Winner is Bobot XD")).await?;
+            ctx.say("Thanks for playing :)").await?;
+            return Ok(());
+        }
+        _ => {
+            ctx.say(format!(
+                "Bobot choice {:?}, Your choice {:?}",
+                user_choice, computer_cohice
+            ))
+            .await?;
+            ctx.say("It's a tie!").await?;
+            return Ok(());
+        }
+    }
+}
 
-/// Write !age and see your account age
-
+/// See your account age
 #[poise::command(prefix_command)]
 pub async fn age(
     ctx: Context<'_>,
@@ -142,9 +198,7 @@ pub async fn age(
     Ok(())
 }
 
-/// Source
-///
-/// bobot's source code link !source
+/// Source code of bobot
 #[poise::command(prefix_command)]
 pub async fn source(
     ctx: Context<'_>,
