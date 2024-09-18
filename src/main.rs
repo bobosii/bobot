@@ -1,4 +1,5 @@
 #![warn(clippy::str_to_string)]
+mod rock_paper_scissors;
 mod commands;
 use dotenvy::dotenv;
 use poise::serenity_prelude as serenity;
@@ -50,7 +51,7 @@ async fn main() {
             commands::vote(),
             commands::getvotes(),
             commands::age(),
-            commands::rockpaper(),
+            rock_paper_scissors::rockpaper(),
         ],
         prefix_options: poise::PrefixFrameworkOptions {
             prefix: Some("!".into()),

@@ -2,6 +2,8 @@ use crate::{Context, Error};
 use poise::serenity_prelude as serenity;
 use rand::Rng;
 use std::cmp::Ordering;
+use lazy_static;
+
 
 /// Show this help menu
 #[poise::command(prefix_command, track_edits)]
@@ -150,40 +152,27 @@ pub async fn rockpaper(
     user: Option<serenity::User>,
 ) -> Result<(), Error> {
     let game = ["rock", "paper", "scissors"];
+
     let user_choice = choice.trim().to_lowercase();
     let computer_cohice = game[rand::thread_rng().gen_range(1..3)];
+
     let u = user.as_ref().unwrap_or_else(|| ctx.author());
-    match (user_choice.as_str(), computer_cohice) {
-        ("rock", "scissors") | ("scissors", "paper") | ("paper", "rock") => {
-            ctx.say(format!(
-                "Bobot choice {:?}, Your choice {:?}",
-                computer_cohice, user_choice
-            ))
-            .await?;
-            ctx.say(format!("Winner is {}", u.name)).await?;
-            ctx.say("Thanks for playing :)").await?;
-            return Ok(());
-        }
-        ("paper", "scissors") | ("scissors", "rock") | ("rock", "paper") => {
-            ctx.say(format!(
-                "Bobot choice {:?}, Your choice {:?}",
-                user_choice, computer_cohice
-            ))
-            .await?;
-            ctx.say(format!("Winner is Bobot XD")).await?;
-            ctx.say("Thanks for playing :)").await?;
-            return Ok(());
-        }
-        _ => {
-            ctx.say(format!(
-                "Bobot choice {:?}, Your choice {:?}",
-                user_choice, computer_cohice
-            ))
-            .await?;
-            ctx.say("It's a tie!").await?;
-            return Ok(());
-        }
+
+    if !game.contains(&user_choice.as_str()) {
+        ctx.say("Invalid choice! Please select Rock, Paper or Scissors !").await?;
+        return Ok(());
     }
+
+    let result = match (user_choice.as_str(),computer_cohice) {
+        ("rock", "scissors") | ("paper", "rock") | ("scissors", "paper") => "win",
+        ("rock", "paper") | ("paper", "scissors") | ("scissors", "rock") => "lose",
+        _ => "tie",
+    };
+    ctx.say(format!("Bobot chose {}, {} chose {}",computer_cohice,u.name,user_choice)).await?;
+
+    Ok(())
+
+
 }
 
 /// See your account age
