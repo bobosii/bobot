@@ -2,7 +2,6 @@ use crate::{Context, Error};
 use poise::serenity_prelude as serenity;
 use rand::Rng;
 use std::cmp::Ordering;
-use lazy_static;
 
 
 /// Show this help menu
@@ -141,38 +140,6 @@ pub async fn ping(
     let response = "Pong?";
     ctx.reply(response).await?;
     Ok(())
-}
-/// Rock Paper Scissors
-///
-/// Type your choice !rockpaper rock
-#[poise::command(prefix_command)]
-pub async fn rockpaper(
-    ctx: Context<'_>,
-    #[description = "Rock Paper Scissors ?"] choice: String,
-    user: Option<serenity::User>,
-) -> Result<(), Error> {
-    let game = ["rock", "paper", "scissors"];
-
-    let user_choice = choice.trim().to_lowercase();
-    let computer_cohice = game[rand::thread_rng().gen_range(1..3)];
-
-    let u = user.as_ref().unwrap_or_else(|| ctx.author());
-
-    if !game.contains(&user_choice.as_str()) {
-        ctx.say("Invalid choice! Please select Rock, Paper or Scissors !").await?;
-        return Ok(());
-    }
-
-    let result = match (user_choice.as_str(),computer_cohice) {
-        ("rock", "scissors") | ("paper", "rock") | ("scissors", "paper") => "win",
-        ("rock", "paper") | ("paper", "scissors") | ("scissors", "rock") => "lose",
-        _ => "tie",
-    };
-    ctx.say(format!("Bobot chose {}, {} chose {}",computer_cohice,u.name,user_choice)).await?;
-
-    Ok(())
-
-
 }
 
 /// See your account age
